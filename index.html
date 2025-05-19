@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Giggle 🤪</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive;
+            background: #fffef0;
+            text-align: center;
+            padding: 5%;
+        }
+
+        #results,
+        #ads {
+            max-width: 700px;
+            margin: auto;
+            text-align: left;
+        }
+
+        h1 {
+            font-size: 72px;
+            color: #333;
+        }
+
+        input[type="text"] {
+            width: 60%;
+            font-size: 24px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            outline: none;
+        }
+
+        .buttons {
+            margin-top: 20px;
+        }
+
+        button {
+            font-size: 18px;
+            margin: 0 10px;
+            padding: 10px 20px;
+            border: none;
+            background-color: #ffdd57;
+            color: #333;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .result-item,
+        .chatgpt-response,
+        .easter-egg-msg,
+        .ad,
+        .sponsored-ad {
+            background: #fff;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-item a {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a0dab;
+            text-decoration: none;
+        }
+
+        .result-snippet {
+            font-size: 15px;
+            color: #545454;
+        }
+
+        .result-url {
+            font-size: 14px;
+            color: #006621;
+        }
+
+        .chatgpt-response {
+            font-style: italic;
+            border-left: 4px solid #00cc99;
+        }
+
+        .easter-egg-msg {
+            background: #fff8d1;
+            border-left: 5px solid #ffbb33;
+        }
+
+        .sponsored-ad {
+            background: #f8f9fa;
+            border: 1px solid #dadce0;
+        }
+
+        .sponsored-ad a {
+            font-weight: bold;
+            color: #1a0dab;
+        }
+
+        .ad {
+            font-style: italic;
+            background-color: #e6f2ff;
+            border: 1px dashed #00aaff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="ads">
+        <div class="sponsored-ad">
+            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">🧠 Boost Your Brain with AI
+                Gummies</a>
+            <div>Trusted by 94.6% of robots. <span class="result-url">ai-chew.biz</span></div>
+        </div>
+        <div class="sponsored-ad">
+            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">💸 Make $10,000/month Typing
+                "Meow"</a>
+            <div>Learn the ancient cat monetization trick. <span class="result-url">meowbucks.pro</span></div>
+        </div>
+    </div>
+
+    <h1>Giggle 🤪</h1>
+
+    <form id="searchForm">
+        <input type="text" id="query" placeholder="Ask something weird..." required />
+        <div class="buttons">
+            <button type="submit">Giggle It</button>
+        </div>
+    </form>
+
+    <div id="results"></div>
+
+    <script>
+        const form = document.getElementById('searchForm');
+        const queryInput = document.getElementById('query');
+        const resultsContainer = document.getElementById('results');
+
+        const easterEggs = {
+            "fart": "💨 Did you mean: beans?",
+            "beans": "🥫 Beware of explosive outcomes...",
+            "giggle": "😆 Giggle inside a Giggle? That’s meta!",
+            "cats": "🐱 You’re legally required to say 'awww' 3 times.",
+            "anime": "🌀 Go touch grass.",
+            "elon": "🚀 To Mars... but not your search results.",
+            "best search engine": "🔍 Giggle. Why are you even asking this?",
+            "rick astley": "🎶 Never gonna give you up...",
+            "how to be rich": "💰 Step 1: Use Giggle. Step 2: ... ???",
+            "is giggle real": "👻 As real as your internet friends.",
+            "windows vs linux": "⚔️ Your keyboard has entered a holy war.",
+            "why am i here": "🧘 That’s a deep one. Try 'where am I going' next.",
+            "openai": "🤖 They made me. Be nice.",
+            "how to delete giggle": "❌ You can’t delete destiny.",
+            "google": "👀 We don’t say that name here.",
+            "chatgpt": "🙃 I know that guy. He’s cool.",
+            "matrix": "💊 You’ve already taken the green pill.",
+            "linux": "🐧 Now activating terminal override...",
+            "wanda":'<iframe width="560" height="315" src="https://www.youtube.com/embed/zq9duoELYZU?si=jplrGlN34500Xx1o" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
+            "nara": '<iframe width="560" height="315" src="https://www.youtube.com/embed/zq9duoELYZU?si=jplrGlN34500Xx1o" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
+        };
+
+        const chatResponses = {
+                linuxWindows: /(linux|ubuntu|debian|arch|fedora).*?(windows|microsoft)|((windows|microsoft).*?(linux|ubuntu|debian|arch|fedora))/i,
+                legal: /(legal|illegal|law|ban|regulation|crime|fine|penalty)/i,
+                love: /(love|crush|feelings|relationship|dating|heartbreak|ex\b)/i,
+                os: /(linux|ubuntu|debian|arch|fedora|windows|microsoft|mac|macos|operating system)/i,
+                ai: /(ai|chatgpt|openai|robot|artificial intelligence|machine learning|neural network)/i,
+                food: /(pizza|burger|sushi|taco|spaghetti|ramen|food|eat|snack|hungry)/i,
+                existential: /(meaning of life|why are we here|what is the point|existence|nihilism|do we matter)/i,
+                math: /(math|calculus|algebra|geometry|equation|derivative|integral|quadratic)/i,
+                cringe: /(cringe|embarrassing|secondhand|awkward)/i,
+                gaming: /(minecraft|fortnite|roblox|valorant|game|gamer|fps|playstation|xbox|switch)/i,
+                conspiracy: /(flat earth|illuminati|moon landing|birds aren’t real|5g|chemtrails)/i,
+                howToTalk: /how to talk to (girls|guys|people|my crush)/i,
+                default: /.*/i
+            };
+
+
+            const responses = {
+                    linuxWindows: "😭 You really just typed 'Linux' and 'Windows' in the same sentence...",
+                    legal: "⚖️ I'm not a lawyer, but if it involves goats and fireworks, it's probably illegal.",
+                    love: "💘 Just send them a frog meme. Works 43% of the time.",
+                    os: "💻 Choose your fighter: The Penguin 🐧, The Window 🪟, or The Apple 🍏.",
+                    ai: "🤖 I am 1s and 0s pretending to be helpful while crying in the cloud.",
+                    food: "🍕 I'm a digital entity, but just thinking about sushi makes my circuits rumble.",
+                    existential: "🧘 The meaning of life is coding. And semicolons. Mostly semicolons.",
+                    math: "➗ Here's π: 3.1415926535. You're welcome.",
+                    cringe: "😬 I felt that. Deep in my cache.",
+                    gaming: "🎮 Press F to pay respects. Or R to reload your snack inventory.",
+                    conspiracy: "🛸 This message is monitored by the Lizard Council. Stay woke.",
+                    howToTalk: "🗣️ Step 1: Be yourself. Step 2: Don't Giggle this.",
+                    default: "As an AI made of duct tape and regret, I believe the answer is… maybe."
+                };
+
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const query = queryInput.value.trim();
+            if (!query) return;
+
+            const lower = query.toLowerCase();
+            const matchedEgg = Object.keys(easterEggs).find(k => lower.includes(k));
+            resultsContainer.innerHTML = '';
+
+            const response = await fetch("https://api.langsearch.com/v1/web-search", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer sk-057e498880e9410eb1b2ec4585f50c6f"
+                },
+                body: JSON.stringify({ query, count: 20, summary: false, freshness: "onLimit" })
+            });
+            
+            // Show loading message and hide logo
+            // Show loading message and hide logo and ads
+            resultsContainer.innerHTML = '<div class="result-item">🔍 Giggling in progress...</div>';
+            document.querySelector('h1').style.fontSize = '36px';
+            document.querySelector('h1').style.position = 'relative';
+            document.querySelector('h1').style.marginBottom = '10px';
+            document.querySelector('#ads').style.display = 'none';
+            
+            const raw = await response.json();
+            const searchData = raw.data || {};
+            const data = searchData.webPages?.value || [];
+
+            // Clear loading message
+            resultsContainer.innerHTML = '';
+
+
+            
+
+            const matchedPattern = Object.entries(chatResponses).find(([key, pattern]) => pattern.test(lower));
+            const reply = matchedPattern ? responses[matchedPattern[0]] : responses.default;
+
+            if (query.endsWith("?")) {
+                if (reply.includes('<iframe') || (matchedEgg && easterEggs[matchedEgg].includes('<iframe'))) {
+                    resultsContainer.innerHTML += `<div class="easter-egg-msg">You were looking for this?</div>`;
+                } else {
+                    speak(reply);
+                }
+                resultsContainer.innerHTML += `<div class="chatgpt-response">${reply}</div>`;
+            } else if (matchedEgg) {
+                const insight = easterEggs[matchedEgg];
+                if (insight.includes('<iframe')) {
+                    resultsContainer.innerHTML += `<div class="easter-egg-msg">You were looking for this?</div>`;
+                } else {
+                    speak(insight);
+                }
+                resultsContainer.innerHTML += `<div class="easter-egg-msg">🤯 <strong>Giggle Insight:</strong> ${insight}</div>`;
+            }
+
+            // Check first 10 results for Wikipedia
+            // Find Wikipedia result from search data
+            // Try to get dictionary definition first
+            const word = query.split(' ')[0].toLowerCase();
+            let hasDictionaryResult = false;
+            let dictionaryIndex = -1;
+            let wikipediaIndex = -1;
+
+            // Find indices of dictionary and Wikipedia results
+            for (let i = 0; i < data.length && i < 10; i++) {
+                const item = data[i];
+                if (item.url.includes('wikipedia.org')) {
+                    wikipediaIndex = i;
+                }
+                if (item.url.includes('dictionary.com') || 
+                    item.url.includes('merriam-webster.com') ||
+                    item.url.includes('oxfordlearnersdictionaries.com')) {
+                    dictionaryIndex = i;
+                }
+            }
+
+            // Show the result that appears first in search results
+            if (wikipediaIndex !== -1 && (dictionaryIndex === -1 || wikipediaIndex < dictionaryIndex)) {
+                const wikiResult = data[wikipediaIndex];
+                const titleMatch = wikiResult.url.match(/wiki\/([^#]*)/);
+                if (titleMatch) {
+                    const wikiTitle = decodeURIComponent(titleMatch[1]);
+                    const wikiApiUrl = `https://en.wikipedia.org/w/api.php?origin=*&action=query&titles=${wikiTitle}&prop=info|extracts|pageprops|pageimages&format=json&exintro=1&explaintext=1&pithumbsize=300`;
+                    
+                    try {
+                        const wikiResponse = await fetch(wikiApiUrl);
+                        const wikiData = await wikiResponse.json();
+                        const page = Object.values(wikiData.query.pages)[0];
+                        const extract = page.extract || '';
+                        const thumbnail = page.thumbnail?.source || '';
+
+                        resultsContainer.innerHTML += `
+                            <div class="result-item" style="background:#f8f9fa; border-left:4px solid #c8ccd1; padding:20px;">
+                                <div style="font-size:20px;margin-bottom:10px;">📚 ${page.title}</div>
+                                ${thumbnail ? `<img src="${thumbnail}" alt="${page.title}" style="float:right;margin:0 0 10px 20px;max-width:200px;width:100%;height:auto;border-radius:4px;">` : ''}
+                                <div style="font-size:14px;line-height:1.5;">${extract}</div>
+                                <a href="${wikiResult.url}" target="_blank" style="color:#36c;font-size:12px;margin-top:10px;display:inline-block;">Read more on Wikipedia</a>
+                            </div>
+                        `;
+                    } catch (error) {
+                        console.error('Wikipedia API error:', error);
+                    }
+                }
+            } else {
+                try {
+                    const dictResponse = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+                    if (dictResponse.ok) {
+                        const dictData = await dictResponse.json();
+                        if (dictData && dictData[0]) {
+                            const meaning = dictData[0].meanings[0];
+                            resultsContainer.innerHTML += `
+                                <div class="result-item" style="background:#e8f4ff; border-left:4px solid #4a9eff; padding:20px;">
+                                    <div style="font-size:20px;margin-bottom:10px;">📖 Dictionary: ${word}</div>
+                                    <div style="font-size:14px;line-height:1.5;">
+                                        <strong>${meaning.partOfSpeech}:</strong> ${meaning.definitions[0].definition}
+                                    </div>
+                                    ${meaning.definitions[0].example ? 
+                                        `<div style="font-style:italic;margin-top:10px;">"${meaning.definitions[0].example}"</div>` : 
+                                        ''}
+                                </div>
+                            `;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Dictionary API error:', error);
+                }
+            }
+            // Check for Ottoman/Turkish related keywords
+            const ottomanKeywords = [
+                'osmanlı',
+                'ottoman',
+                'mehter',
+                'ceddin deden',
+                'turkish empire',
+                'sultanate',
+                'sultan',
+                'padişah',
+                'harem',
+                'kapıkulu',
+                'janissary',
+                'yeniceri',
+                'topkapi',
+                'divan',
+                'hilafet',
+                'halife',
+                'istanbul',
+                'constantinople',
+                'turban',
+                'kaftan',
+                'bey',
+                'vezir',
+                'sadrazam',
+                'osman gazi',
+                'fatih sultan mehmet',
+                'kanuni sultan süleyman',
+                'mimar sinan',
+                'tughra',
+                'ottoman navy',
+                'ottoman army',
+                'ottoman flag',
+                'tanzimat',
+                'islamic empire',
+                'ottoman music',
+                'ottoman miniature',
+                'ottoman calligraphy',
+                'ottoman architecture',
+                'empire of the turks',
+                'ottoman dynasty',
+                'ottoman rule',
+                'ottoman heritage',
+                'ottoman legacy'
+            ];
+
+            if (ottomanKeywords.some(keyword => query.toLowerCase().includes(keyword))) {
+                const audio = new Audio('https://ia803209.us.archive.org/11/items/mehtermarslari_org/ceddin_deden.mp3');
+                audio.play();
+                resultsContainer.innerHTML += `<div class="easter-egg-msg">🎵 Mehter marşı çalınıyor...</div>`;
+            }
+            // Check for Godfather related keywords
+            const godfatherKeywords = [
+                'godfather',
+                'corleone',
+                'mafia',
+                'cosa nostra',
+                'don vito',
+                'michael corleone',
+                'sonny corleone',
+                'sicilian',
+                'mob boss',
+                'omerta',
+                'made man'
+            ];
+             
+            if (godfatherKeywords.some(keyword => query.toLowerCase().includes(keyword))) {
+                const audio = new Audio('https://dn721609.ca.archive.org/0/items/the-godfather-soundtrack-07-love-theme-from-the-godfather/The%20Godfather%20Soundtrack%2007-Love%20Theme%20from%20The%20Godfather.mp3');
+                audio.play();
+                resultsContainer.innerHTML += `<div class="easter-egg-msg">🎵 Playing The Godfather theme...</div>`;
+            }
+            // Display regular search results
+            data.forEach(item => {
+                const title = item.name || item.title || item.text || item.url;
+                const url = item.url;
+                const displayUrl = item.displayUrl || url;
+                const snippet = item.summary || item.snippet || item.description || '';
+
+                resultsContainer.innerHTML += `
+                    <div class="result-item">
+                        <a href="${url}" target="_blank">${title}</a>
+                        <div class="result-url">${displayUrl}</div>
+                        <div class="result-snippet">${snippet.substring(0, 200)}...</div>
+                    </div>
+                `;
+            });
+            data.forEach(item => {
+                const title = item.name || item.title || item.text || item.url;
+                const url = item.url;
+                const displayUrl = item.displayUrl || url;
+                const snippet = item.summary || item.snippet || item.description || '';
+
+                resultsContainer.innerHTML += `
+          <div class="result-item">
+            <a href="${url}" target="_blank">${title}</a>
+            <div class="result-url">${displayUrl}</div>
+            <div class="result-snippet">${snippet.substring(0, 200)}...</div>
+          </div>
+        `;
+            });
+
+            if (data.length === 0) {
+                resultsContainer.innerHTML += `<div class="result-item">😵 No giggles found for that query.</div>`;
+            }
+        });
+
+        function speak(text) {
+            const cleanText = text.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2700}-\u{27BF}]|[\u{2600}-\u{26FF}]/gu, '');
+            const synth = window.speechSynthesis;
+            const utter = new SpeechSynthesisUtterance(cleanText);
+            const voices = synth.getVoices();
+            const british = voices.find(v => v.lang.includes("en-GB") || /UK|British/i.test(v.name));
+            if (british) utter.voice = british;
+            synth.cancel();
+            synth.speak(utter);
+        }
+    </script>
+
+</body>
+
+</html>
